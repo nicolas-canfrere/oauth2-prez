@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div>
+        <a
+                href="http://demo.auth-server.local/realms/master/protocol/openid-connect/auth?client_id=oauth_demo&response_type=code&redirect_uri=http://demo.client.local/auth/callback&scopes=email profile"
+                class="ml-4 inline-flex px-4 py-2 bg-blue-500 text-white rounded appearance-none"
+        >
+            connect
+        </a>
+    </div>
+{% endblock %}

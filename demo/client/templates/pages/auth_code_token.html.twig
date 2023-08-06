@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div>
+        {{ dump(result) }}
+    </div>
+    <div class="mt-8">
+        <p>Access token payload</p>
+        {{ dump(access_token) }}
+        <p>Refresh token payload</p>
+        {{ dump(refresh_token) }}
+    </div>
+{% endblock %}
+

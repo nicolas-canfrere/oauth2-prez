@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div>
+        {{ dump(queryParams) }}
+    </div>
+    <div class="mt-8">
+            <div class="mt-4">
+                <label for="grant_type" class="block font-semibold mb-2">grant_type</label>
+                <input type="text" id="grant_type" name="grant_type" value="authorization_code" class="py-2 px-4 w-full">
+            </div>
+            <div class="mt-4">
+                <label for="client_id" class="block font-semibold mb-2">client_id</label>
+                <input type="text" id="client_id" name="client_id" value="oauth_demo" class="py-2 px-4 w-full">
+            </div>
+            <div class="mt-4">
+                <label for="client_secret" class="block font-semibold mb-2">client_secret</label>
+                <input type="text" id="client_secret" name="client_secret" value="ZpEMO7bOG8Cg0dnIdFwXJJZooe4bmzDv" class="py-2 px-4 w-full">
+            </div>
+            <div class="mt-4">
+                <label for="redirect_uri" class="block font-semibold mb-2">redirect_uri</label>
+                <input type="text" id="redirect_uri" name="redirect_uri" value="http://demo.client.local/auth/callback" class="py-2 px-4 w-full">
+            </div>
+            <div class="mt-4">
+                <label for="code" class="block font-semibold mb-2">code</label>
+                <input type="text" id="code" name="code" value="{{ queryParams.code }}" class="py-2 px-4 w-full">
+            </div>
+            <div class="mt-4">
+                <a
+                        href="{{ path('auth_token', {'code': queryParams.code}) }}"
+                        class="inline-flex px-4 py-2 bg-blue-500 text-white rounded appearance-none"
+                >
+                    Envoyer
+                </a>
+            </div>
+    </div>
+{% endblock %}
+

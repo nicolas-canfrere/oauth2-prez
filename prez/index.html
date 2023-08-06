@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./revealjs/dist/reveal.css">
+    <link rel="stylesheet" href="./revealjs/dist/theme/moon.css">
+    <link rel="stylesheet" href="./revealjs/plugin/highlight/monokai.css">
+    <title>OAuth2 | Prez</title>
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+        <section>
+            <H1>OAuth2</H1>
+            <h3>Open Authorization 2.1</h3>
+            <img src="https://media.tenor.com/mWpYDtV1zTkAAAAC/minions-shh.gif" alt="">
+        </section>
+        <section>
+            <img src="https://i0.wp.com/media0.giphy.com/media/XQvhpuryrPGnK/giphy.gif" alt="">
+            <h2>Mais pourquoi faire ?</h2>
+            <p>
+                OAuth2 (Open Authorization 2.0) est un protocole de <strong style="color: #bbd0d0">gestion des autorisations</strong> qui permet à une
+                application tierce d'agir au nom d'un utilisateur sans avoir à connaître ses informations
+                d'identification (nom d'utilisateur et mot de passe). OAuth2 est principalement utilisé pour sécuriser
+                l'accès à des ressources en ligne, telles que des données utilisateur ou des API, de <strong style="color: #bbd0d0">manière sécurisée et déléguée.</strong>
+            </p>
+        </section>
+        <section>
+            <section>
+                <h2>Mais encore ?</h2>
+                <img src="https://media.tenor.com/Zy5Bhi7P63sAAAAd/oooh-aaah.gif" alt="">
+            </section>
+            <section>
+                <p>
+                    <strong style="color: #bbd0d0">Accès sécurisé aux ressources</strong>
+                </p>
+                <p>
+                    OAuth2 permet à une application tierce d'accéder aux ressources protégées d'un utilisateur
+                    (par exemple, ses photos, ses contacts, ses e-mails, etc.) sans que l'application n'ait besoin
+                    d'obtenir ou de stocker les informations d'identification de l'utilisateur.
+                </p>
+                <p>
+                    <strong style="color: #bbd0d0">Autorisation granulaire : scopes & consentement</strong>
+                </p>
+                <p>
+                    OAuth2 offre un mécanisme d'autorisation granulaire, ce qui signifie qu'un utilisateur peut accorder
+                    à une application tierce un accès limité à certaines ressources spécifiques, sans lui donner un accès complet à son compte.
+                </p>
+                <p>
+                    <strong style="color: #bbd0d0">Contrôle utilisateur</strong>
+                </p>
+                <p>
+                    L'utilisateur conserve le contrôle total sur les autorisations accordées à une application.
+                    Il peut révoquer l'accès à tout moment s'il n'a plus confiance en l'application, sans avoir à changer son mot de passe.
+                </p>
+            </section>
+            <section>
+                <p>
+                    <strong style="color: #bbd0d0">Single Sign-On (SSO)</strong>
+                </p>
+                <p>
+                    OAuth2 peut être utilisé pour mettre en œuvre le Single Sign-On, où un utilisateur peut se connecter
+                    une fois à un fournisseur d'identité et ensuite accéder à plusieurs applications sans avoir à se
+                    connecter séparément à chaque application. (ex: utilisation compte Google Pro chez Evaneos)
+                </p>
+                <p>
+                    <strong style="color: #bbd0d0">Séparation des rôles</strong>
+                </p>
+                <p>
+                    OAuth2 permet de séparer les rôles et les responsabilités entre les fournisseurs d'identité,
+                    les applications clientes et les utilisateurs. Les fournisseurs d'identité gèrent l'authentification,
+                    tandis que les applications clientes gèrent l'autorisation.
+                </p>
+                <p>
+                    <strong style="color: #bbd0d0">Interopérabilité</strong>
+                </p>
+                <p>
+                    OAuth2 est largement adopté et standardisé, ce qui signifie qu'il peut être utilisé pour sécuriser
+                    l'accès aux ressources dans une grande variété de domaines et d'applications,
+                    qu'il s'agisse d'applications web, mobiles ou d'Internet des objets (IoT).
+                </p>
+            </section>
+        </section>
+        <section>
+            <img src="https://media.tenor.com/z5UZDqz0yjcAAAAC/minions-bored.gif" alt="" width="300px">
+            <h2>Histoire</h2>
+            <h5>un peu, pas trop</h5>
+            <p>
+                <strong style="color: #bbd0d0">2006</strong> OAuth 1.0, Il a été développé par Blaine Cook (Twitter), Chris Messina (Twitter) and all
+            </p>
+            <p>
+                <strong style="color: #bbd0d0">2012</strong> OAuth 2.0, toujours par la même équipe, refonte du protocole vers une version "plus facile".
+            </p>
+            <p>
+                <strong style="color: #bbd0d0">Entre temps</strong> Ajout des JWT say " jot "
+            </p>
+            <p>
+                <strong style="color: #bbd0d0">2020</strong> OAuth 2.1, en draft pour le moment, déprécation de l'Implicit Flow, ajout de PKCE ...
+            </p>
+        </section>
+        <section>
+            <section>
+                <h2>Vocabulaire</h2>
+                <img src="https://media.tenor.com/em77EfE_r-8AAAAC/banana-minions.gif" alt="">
+            </section>
+            <section>
+                <h3>Resource Owner (= user)</h3>
+                <p>
+                    La spécification OAuth 2.0 fait référence à <span style="color: #bbd0d0">l'utilisateur en tant que « propriétaire de la ressource ».</span>
+                    Le propriétaire de la ressource est la personne qui donne accès à une partie de son compte.
+                    Les ressources dans ce cas peuvent être des données (photos, documents, contacts),
+                    des services (publier une entrée de blog, transférer des fonds), ou toute autre ressource nécessitant
+                    des restrictions d'accès. Tout système qui souhaite agir au nom de l'utilisateur doit d'abord obtenir l'autorisation de celui-ci.
+                </p>
+            </section>
+            <section>
+                <h3>Resource server</h3>
+                <p>
+                    La spécification fait référence à ce que vous considérez généralement comme <span style="color: #bbd0d0">l'API principale en
+                    tant que "serveur de ressources".</span> Le serveur de ressources est le serveur qui contient les
+                    informations de l'utilisateur auxquelles accède l'application tierce. Le serveur de ressources
+                    doit pouvoir accepter et valider les jetons d'accès et accorder la demande si l'utilisateur l'a autorisé.
+                    Le serveur de ressources n'a pas nécessairement besoin de connaître les applications.
+                </p>
+            </section>
+            <section>
+                <h3>Authorization server</h3>
+                <p>
+                    Le serveur d'autorisation est ce avec quoi l'utilisateur interagit lorsqu'une application demande
+                    l'accès à son compte. Il s'agit du serveur qui affiche l'invite OAuth et où l'utilisateur
+                    approuve ou refuse la demande de l'application. Le serveur d'autorisation est également responsable
+                    de l'octroi des jetons d'accès une fois que l'utilisateur a autorisé l'application.
+                </p>
+            </section>
+            <section>
+                <h3>Client (!= user !)</h3>
+                <p>
+                    Le client est l'application qui tente d'agir au nom de l'utilisateur ou d'accéder aux ressources
+                    de l'utilisateur. Avant que le client puisse accéder au compte de l'utilisateur,
+                    il doit obtenir l'autorisation. Le client obtiendra l'autorisation soit en dirigeant l'utilisateur
+                    vers le serveur d'autorisation, soit en affirmant l'autorisation directement auprès du serveur
+                    d'autorisation sans interaction de l'utilisateur.
+                </p>
+                <p><strong style="color: #bbd0d0">Confidential Clients</strong></p>
+                <p>
+                    Les clients confidentiels sont des clients qui ont la capacité de maintenir la confidentialité
+                    du <strong style="color: #bbd0d0"><i>client_secret</i></strong>. Généralement, ces clients ne sont que des applications qui s'exécutent sur un
+                    serveur sous le contrôle du développeur, où le code source n'est pas accessible aux utilisateurs.
+                    Ces types d'applications sont communément appelés "applications Web", car <strong style="color: #bbd0d0"><i>elles s'exécutent
+                    le plus souvent sur un serveur Web.</i></strong>
+                </p>
+                <p><strong style="color: #bbd0d0">Public Clients</strong></p>
+                <p>
+                    Les clients publics <strong style="color: #bbd0d0"><i>ne peuvent pas maintenir la confidentialité d'un client_secret</i></strong>, donc le secret n'est pas utilisé
+                    pour ces applications. <strong style="color: #bbd0d0"><i>Les applications mobiles et les applications Javascript sont considérées comme des clients publics</i></strong>. Puisque n'importe qui
+                    l'exécution d'une application Javascript peut facilement afficher le code source de l'application, un secret serait
+                    visible là trivialement. Avec les applications mobiles, le binaire peut être décompilé pour extraire des chaînes.
+                    Chaque fois que l'application s'exécute sur un appareil sous le contrôle de l'utilisateur, elle doit être considérée comme un client public.
+                </p>
+            </section>
+            <section>
+                <h3>Front Channel vs Back Channel</h3>
+                <p>Le <strong style="color: #bbd0d0">"front channel"</strong> dans les flux OAuth fait référence à la partie visible et moins sécurisée du
+                    processus d'autorisation, où les informations d'accès peuvent être exposées, généralement dans l'URL du navigateur,
+                    lors de l'interaction entre l'utilisateur et l'application cliente.</p>
+                <p>
+                    Le <strong style="color: #bbd0d0">"back channel"</strong> dans les flux OAuth désigne la voie sécurisée et confidentielle utilisée pour
+                    échanger des informations sensibles, telles que les codes d'autorisation et les jetons d'accès,
+                    entre les serveurs d'autorisation et de ressources, tout en préservant la sécurité des données.
+                </p>
+            </section>
+            <section>
+                <h3>Access Token</h3>
+                <p>
+                    Un jeton d'accès est la chaîne utilisée lors de l'envoi de requêtes authentifiées à l'API.
+                    La chaîne elle-même n'a aucune signification pour l'application qui l'utilise,
+                    mais indique que l'utilisateur a autorisé une application tierce à accéder à son compte.
+                    Le jeton a une durée d'accès correspondante, une portée et potentiellement d'autres informations dont le serveur a besoin. Voir Json Web Token JWT "jot"
+                </p>
+            </section>
+            <section>
+                <h3>Refresh Token</h3>
+                <p>
+                    Un jeton d'actualisation est une chaîne utilisée pour obtenir un nouveau jeton d'accès lorsqu'un
+                    jeton d'accès expire. Toutes les API n'utilisent pas de jetons d'actualisation.
+                </p>
+            </section>
+            <section>
+                <h3>Authorization Code</h3>
+                <p>
+                    Un code d'autorisation est un jeton intermédiaire utilisé dans le flux d'applications côté serveur,
+                    décrit plus en détail dans Applications côté serveur. Un code d'autorisation est renvoyé au
+                    client après l'étape d'autorisation, puis le client l'échange contre un jeton d'accès.
+                </p>
+            </section>
+            <section>
+                <h3>Scopes</h3>
+                <p>
+                    Les scopes dans OAuth définissent les autorisations spécifiques accordées à une application tierce
+                    pour accéder aux ressources d'un utilisateur sur un serveur de ressources.
+                    Les scopes limitent l'étendue des actions que l'application peut effectuer au nom de l'utilisateur.
+                    Ils permettent de définir quelles parties des données de l'utilisateur une application est autorisée à récupérer et à manipuler.
+                </p>
+                <p>
+                    Par exemple, un scope pourrait être "lecture du profil" ou "accès aux photos".
+                    Lorsqu'un utilisateur autorise une application à accéder à ses ressources, il accorde des scopes spécifiques à l'application.
+                    Les scopes aident à garantir que les applications tierces n'ont accès qu'aux informations nécessaires et approuvées,
+                    renforçant ainsi la sécurité et la confidentialité des données de l'utilisateur.
+                </p>
+            </section>
+        </section>
+        <section>
+            <section>
+                <img src="https://media.tenor.com/3k_G7aSpz8gAAAAM/minions-slide.gif" alt="" width="400px">
+                <h2>Les flows</h2>
+                <p>
+                Un "flow OAuth" (ou flux OAuth) est un processus spécifique utilisé pour obtenir l'autorisation d'accéder
+                aux ressources d'un utilisateur sur un serveur de ressources par le biais d'une application tierce.
+                Ces flux définissent les étapes et les interactions nécessaires entre les différentes parties impliquées
+                (utilisateur, application cliente, serveur d'autorisation et serveur de ressources) pour obtenir et échanger des jetons d'accès.
+                </p>
+                <p>
+                    Ces flows d'autorisation OAuth sont conçus pour répondre à différentes situations et exigences en matière de sécurité,
+                    en garantissant que seules les applications autorisées peuvent accéder aux ressources d'un utilisateur
+                    et en protégeant les informations sensibles.
+                </p>
+            </section>
+            <section>
+                <h3>Types de flows</h3>
+                <p>&#128421; Client Credentials flow</p>
+                <p>&#128187; Authorization Code flow</p>
+                <p>&#128241; Authorization Code flow with PKCE</p>
+                <p>&#129332; Resource Owner Password Credentials flow *</p>
+                <p>&#128250; Device Authorization Flow *</p>
+                <p>&#9940; Implicit flow - legacy/deprecated *</p>
+                <p><small>* non évoqué en détail dans cette prez'</small></p>
+            </section>
+        </section>
+        <section>
+            <section>
+                <h2>&#128421; Client Credentials flow</h2>
+                <p><strong>Clients confidentiels uniquement</strong></p>
+                <p>
+                    Utilisée pour les applications non interactives, par exemple, les processus automatisés,
+                    les microservices, etc. Dans ce cas, l'application est authentifiée en tant que telle à l'aide
+                    de son identifiant client et de son code secret.
+                </p>
+                <p><small>https://datatracker.ietf.org/doc/html/rfc6749#section-4.4</small></p>
+            </section>
+            <section>
+                <img src="img/client_credentials_flow.png">
+            </section>
+        </section>
+        <section>
+            <section>
+                <h2>&#128187; Authorization Code flow</h2>
+                <p><strong>Clients confidentiels uniquement</strong></p>
+                <p>
+                    Le flux de code d'autorisation OAuth2 (Authorization Code Flow) est l'un des flux d'autorisation
+                    principaux utilisés pour sécuriser l'accès aux ressources en ligne, telles que les données utilisateur,
+                    via des applications tierces. Il s'agit d'un processus de sécurisation qui permet à un utilisateur
+                    de consentir à une application tierce pour accéder à ses données personnelles sans divulguer
+                    directement ses informations d'identification (nom d'utilisateur et mot de passe) à cette application.
+                </p>
+                <p>
+                    Le flux de code d'autorisation OAuth2 offre un niveau de sécurité plus élevé par rapport à la simple
+                    utilisation d'un nom d'utilisateur et d'un mot de passe. Il permet aux utilisateurs de contrôler
+                    les autorisations accordées aux applications tierces et évite l'exposition directe des informations
+                    d'identification de l'utilisateur à ces applications.
+                </p>
+                <p>https://datatracker.ietf.org/doc/html/rfc6749#section-4.1</p>
+            </section>
+            <section>
+                <img src="img/authorization_code_flow.png">
+            </section>
+        </section>
+        <section>
+            <section>
+                <h2>&#128241; Authorization Code flow with PKCE</h2>
+                <p><strong>Clients publiques uniquement</strong></p>
+                <p><small>PKCE, prononcé "pixy", pour Proof Key for Code Exchange</small></p>
+                <p>
+                    Authorization Code flow mais pour les mobiles et web app qui n'ont pas de client_secret !
+                </p>
+                <p>https://datatracker.ietf.org/doc/html/rfc7636</p>
+            </section>
+            <section>
+                <img src="img/authorization_code_PKCE_flow.png">
+            </section>
+        </section>
+        <section>
+            <h2>Autres flows</h2>
+            <h4>&#129332; Resource Owner Password Credentials flow</h4>
+            <p>https://datatracker.ietf.org/doc/html/rfc6749#section-4.3</p>
+            <p>
+                <small>Le flux ROPC est une méthode d'authentification OAuth2 où une application tierce obtient l'accès<br>
+                    en utilisant directement les informations d'identification du propriétaire des ressources
+                    (utilisateur), <br>ce qui peut poser des problèmes de sécurité.</small>
+            </p>
+            <h4>&#128250; Device Authorization Flow</h4>
+            <p>https://datatracker.ietf.org/doc/html/rfc8628</p>
+            <p>
+                <small>permet à des appareils ayant des capacités d'affichage limitées, tels que les téléviseurs, les consoles de jeu ou les montres connectées,<br>
+                    de se connecter à des comptes en ligne en obtenant un code spécifique. <br>
+                    Ce code est ensuite échangé contre un jeton d'accès, <br>
+                    permettant à l'appareil d'accéder aux ressources protégées au nom de l'utilisateur. <br>
+                    C'est une manière pratique pour les appareils avec des interfaces limitées d'obtenir l'accès sécurisé à des comptes en ligne.</small>
+            </p>
+            <h4>&#9940; Implicit flow - <strong>deprecated !</strong></h4>
+            <p>https://datatracker.ietf.org/doc/html/rfc6749#section-4.2</p>
+            <p><small>No comment</small></p>
+        </section>
+        <section>
+            <section>
+                <h2>JWT : Json Web Token</h2>
+                <p>https://datatracker.ietf.org/doc/html/rfc7519</p>
+                <p><small>header : BASE64URL(jsonHeader)</small></p>
+                <p><small>payload : BASE64URL(jsonPayload)</small></p>
+                <p><small>signature: HMAC(header + "." + payload, secretKey)</small></p>
+                <p style="color: #bbd0d0">JWT = hearder + "." + payload + "." + signature</p>
+                <img src="https://gifdb.com/images/high/evil-purple-minion-ghkeupukdl7g2pq0.gif" alt="" width="300px">
+                <p><strong>"jot !"</strong></p>
+            </section>
+            <section>
+                <h2>JWT, exemple</h2>
+                <pre><code>
+                    let jsonHeader = '{"algo": "HS256", "typ": "JWT"}';
+                    let header = base64UrlEncode(jsonHeader);
+                    // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+                    let jsonPayload = '{ "sub": "1234567890", "name": "John Doe", "iat": 1516239022}';
+                    let payload = base64UrlEncode(jsonPayload);
+                    //eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ
+                    let signature: HMAC_HS256(header + "." + payload, "my_secret_key");
+                    // QhRz5HPGc46Rs_How2p_avcy3syRtdpwP7r-Ixn-dbI
+
+                    let jwt = header + "." + payload+ "." + signature;
+                    // retour à la ligne forcée pour lisibilité
+                    // eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9
+                    // .eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ
+                    // .QhRz5HPGc46Rs_How2p_avcy3syRtdpwP7r-Ixn-dbI
+                </code></pre>
+                <p><a href="https://jwt.io" target="_blank"><small>voir https://jwt.io</small></a></p>
+            </section>
+        </section>
+        <section>
+            <section>
+                <h2>&#127820; Ressources &#127820;</h2>
+                <img src="https://www.mkgifs.com/wp-content/uploads/2022/05/minion-banana-gif.gif" alt="">
+            </section>
+            <section data-markdown>
+                <textarea data-template>
+                    ### &#127820; Oauth
+- rfc6749 The OAuth 2.0 Authorization Framework
+- rfc6750 The OAuth 2.0 Authorization Framework: Bearer Token Usage
+- rfc7009 OAuth 2.0 Token Revocation
+- rfc7591 OAuth 2.0 Dynamic Client Registration Protocol
+- rfc7592 OAuth 2.0 Dynamic Client Registration Management Protocol
+- rfc7636 Proof Key for Code Exchange by OAuth Public Clients
+- rfc7662 OAuth 2.0 Token Introspection
+- rfc8252 OAuth 2.0 for Native Apps
+- rfc8414 OAuth 2.0 Authorization Server Metadata
+- rfc8628 OAuth 2.0 Device Authorization Grant
+                </textarea>
+            </section>
+            <section data-markdown>
+                <textarea data-template>
+                    ### &#127820; JWT
+- rfc7515 JSON Web Signature (JWS)
+- rfc7517 JSON Web Key (JWK)
+- rfc7519 JSON Web Token (JWT)
+- rfc7523 JSON Web Token (JWT) Profile for OAuth 2.0 Client Authentication and Authorization Grants
+- rfc9068 JSON Web Token (JWT) Profile for OAuth 2.0 Access Tokens
+                </textarea>
+            </section>
+            <section data-markdown>
+                <textarea data-template>
+                    ### &#127820; Divers
+- rfc2617 HTTP Authentication: Basic and Digest Access Authentication
+- map-oauth-2-0-specs
+- OAuth 2.0 for Browser-Based Apps
+- OpenId Connect
+                </textarea>
+            </section>
+        </section>
+        <section>
+            <h2>The end</h2>
+            <p>Merci pour votre attention !</p>
+            <iframe src="https://gifer.com/embed/BAqI" width=480 height=217.000 frameBorder="0" allowFullScreen></iframe>
+        </section>
+        <section>
+            <h2>Des questions ?</h2>
+            <img src="https://i.gifer.com/Wqtk.gif" alt="">
+        </section>
+    </div>
+</div>
+
+<script type="module">
+    import RevealEsm from './revealjs/dist/reveal.esm.js'
+    import Markdown from './revealjs/plugin/markdown/markdown.esm.js'
+    import RevealHighlight from './revealjs/plugin/highlight/highlight.esm.js'
+    import RevealNotes from './revealjs/plugin/notes/notes.esm.js'
+
+    RevealEsm.initialize({
+        'hash': true,
+        'width': 2000,
+        'height': 1125,
+        'plugins': [RevealHighlight, RevealNotes, Markdown]
+    })
+</script>
+</body>
+</html>

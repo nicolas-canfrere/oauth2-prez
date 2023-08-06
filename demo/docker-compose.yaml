@@ -1,0 +1,94 @@
+services:
+    ####> PROXY #####
+    oauth_demo_proxy:
+        image: traefik:${TRAEFIK_VERSION:-2.6}
+        ports:
+            - "80:80"
+        networks:
+            oauth_demo_network:
+                aliases:
+                    - "proxy.oauth-demo.local"
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=oauth_demo_network"
+            - "traefik.http.routers.api.rule=Host(`proxy.oauth-demo.local`)"
+            - "traefik.http.routers.api.service=api@internal"
+            - "traefik.http.routers.api.entrypoints=http"
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./traefik/traefik.yaml:/etc/traefik/traefik.yaml:ro
+    ####< PROXY #####
+    ####> AUTH #####
+    ####> AUTH KEYCLOACK #####
+    oauth_demo_auth:
+        image: quay.io/keycloak/keycloak:${KEYCLOACK_VERSION:-22.0.1}
+        networks:
+            oauth_demo_network:
+                aliases:
+                    - "demo.auth-server.local"
+        command: start-dev
+        env_file: .env
+        depends_on:
+            oauth_demo_auth_postgres:
+                condition: service_healthy
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=oauth_demo_network"
+            - "traefik.http.routers.demo-auth-server-local.entrypoints=http"
+            - "traefik.http.routers.demo-auth-server-local.rule=Host(`demo.auth-server.local`)"
+            - "traefik.http.services.demo-auth-server-local.loadbalancer.server.port=8080"
+    ####< AUTH KEYCLOACK #####
+    ####> AUTH POSTGRES #####
+    oauth_demo_auth_postgres:
+        image: postgres:${POSTGRES_VERSION:-15}
+        networks:
+            - oauth_demo_network
+        ports:
+            - "5433:5432"
+        env_file: .env
+        volumes:
+            - oauth_demo_auth_postgres_vol:/var/lib/postgresql/data:rw
+        healthcheck:
+            test: "exit 0"
+        labels:
+            - "traefik.enable=false"
+####< AUTH POSTGRES #####
+####< AUTH #####
+###> Client ###
+###> Client Server ###
+    oauth_demo_client_server:
+        image: nginx:1.25-alpine3.17
+        networks:
+            oauth_demo_network:
+                aliases:
+                    - "demo.client.local"
+        volumes:
+            - ./nginx/conf.d:/etc/nginx/conf.d:ro
+            - ./client:/client
+        working_dir: /client
+        depends_on:
+            - oauth_demo_client_app
+        labels:
+            - "traefik.enable=true"
+            - "traefik.docker.network=oauth_demo_network"
+            - "traefik.http.routers.demo-client-local.entrypoints=http"
+            - "traefik.http.routers.demo-client-local.rule=Host(`demo.client.local`)"
+###< Client Server ###
+###> Client App ###
+    oauth_demo_client_app:
+        image: php-dev:8.2.6
+        networks:
+            - oauth_demo_network
+        volumes:
+            - ./client:/client
+        working_dir: /client
+        labels:
+            - "traefik.enable=false"
+###< Client App ###
+###< Client ###
+networks:
+    oauth_demo_network:
+        driver: bridge
+        name: 'oauth_demo_network'
+volumes:
+    oauth_demo_auth_postgres_vol:

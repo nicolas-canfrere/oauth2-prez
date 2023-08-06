@@ -1,0 +1,10 @@
+/.idea
+###> symfony/framework-bundle ###
+/demo/client/.env.local
+/demo/client/.env.local.php
+/demo/client/.env.*.local
+/demo/client/config/secrets/prod/prod.decrypt.private.php
+/demo/client/public/bundles/
+/demo/client/var/
+/demo/client/vendor/
+###< symfony/framework-bundle ###
